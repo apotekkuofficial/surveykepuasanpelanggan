@@ -379,13 +379,17 @@
 
   <div class="foot">
     ApotekKU · Sistem Survei Kepuasan Pelanggan<br/>
-    Data tersimpan dan terkumpul otomatis dari semua pelanggan yang mengisi.
+    Semua jawaban tersimpan otomatis ke satu Google Sheet pusat untuk evaluasi HO.
   </div>
 </div>
 
 <script>
-const KEY_PREFIX='apotekku:sub:';
-const PASSCODE='apotek2026';   // ganti sesuai kebutuhan
+/* ====== HUBUNGKAN KE GOOGLE SHEETS ======
+   Tempel URL Web App dari Google Apps Script di antara tanda kutip di bawah.
+   Cara mendapatkannya ada di PANDUAN.md (Langkah 1–3). */
+const API_URL='https://script.google.com/macros/s/AKfycbxSi890Xuja8jWp6SjPROTboerfAneNceD7zSP7Dcweze_GTXV3FLDDMTGFQBpPoZCgLg/exec';
+const PASSCODE='apotek2026';
+function apiReady(){return API_URL && !/PASTE_URL/.test(API_URL);}   // ganti sesuai kebutuhan
 const OUTLET_NAMES=[
 "APOTEKKU HP NO. 46 CAMPUHAN UBUD","APOTEKKU NO. 36 CAHAYA MEDIKA","APOTEKKU HP NO. 47 CAMPLUNG TANDUK","APOTEKKU A.YANI DENPASAR","APOTEKKU NO. 49 MANYAR","APOTEKKU NO. 39 DALUNG","APOTEKKU NO. 37 TRENGGULI","APOTEKKU KITA NEGARA","APOTEKKU NO. 78 TAMAN GRIYA 2","APOTEKKU NO. 57 PEKUTATAN","APOTEKKU HP MUNGGU 2","APOTEKKU NO. 31 GATSU","APOTEKKU MARGA","APOTEKKU NO. 54 SINGASANA","APOTEKKU NO. 41 KARANGASEM","APOTEKKU HP NO. 48 MELASTI","APOTEKKU NO. 75 TEUKU UMAR","APOTEKKU BAJRA","APOTEKKU HP NO. 38 PERERENAN","APOTEKKU GUNUNG SANGHYANG","APOTEKKU NO. 73 PEREAN","APOTEKKU NO. 66 TUBAN","APOTEKKU HP NO. 61 SEMINYAK","APOTEKKU SESETAN","APOTEKKU NO. 43 SUKAWATI","APOTEKKU MENGWI","APOTEKKU BYPASS","APOTEKKU HP NO. 32 KEROBOKAN","APOTEKKU PADU KARYA","APOTEKKU NEGARA","APOTEKKU NO. 67 DANAU BUYAN","APOTEKKU NO. 70 DALUNG PERMAI","APOTEKKU NO. 62 PAGUTAN MATARAM","APOTEKKU UBUD","APOTEKKU NO. 74 PENARUNGAN","APOTEKKU KITA UBUNG","APOTEKKU GUNUNG AGUNG","APOTEKKU NO. 64 NYITDAH","APOTEKKU HP NO. 63 TANJUNG BENOA","APOTEKKU NO. 76 ABIANSEMAL","APOTEKKU NO. 28 SERIRIT","APOTEKKU NO. 71 SURAPATI SINGARAJA","APOTEKKU KUTA","APOTEKKU NO. 72 GOR DEBES","APOTEKKU NO. 77 REMBIGA MATARAM","APOTEKKU SINGARAJA","APOTEKKU MAMBAL","APOTEKKU NO. 55 GIANYAR","APOTEKKU NO. 80 SUKAWATI 2","APOTEKKU HP NO. 79 UBUD RAYA","APOTEKKU NO. 33 YEH AYA","APOTEKKU NO. 68 HAYAM WURUK","APOTEKKU HP NO. 50 BYPASS SANUR","APOTEKKU NO. 59 NUSA DUA","APOTEKKU HP NO. 30 CANGGU","APOTEKKU BATUBULAN","APOTEKKU PULAU KAWE","APOTEKKU HP NO. 69 DANAU TAMBLINGAN","APOTEKKU TEUKU UMAR BARAT","APOTEKKU KAMASAN","APOTEKKU KURNIA","APOTEKKU HP NO. 44 ULUWATU","APOTEKKU H P MUNGGU","APOTEKKU HP NO. 53 HANOMAN UBUD","APOTEKKU KITA SETIA","APOTEKKU NO. 51 ABIAN TUBUH MATARAM","APOTEKKU NO. 35 MONANG MANING","APOTEKKU NO. 81 SELABIH","APOTEKKU HP NO. 40 BERAWA","APOTEKKU HP NO. 45 SANUR","APOTEKKU BERABAN","APOTEKKU NO. 56 SURYA MEDIKA","APOTEKKU NO. 52 AMPENAN MATARAM","APOTEKKU KITA SIDHIKARYA","APOTEKKU NO. 34 TAMAN GRIYA","APOTEKKU SANGGULAN","APOTEKKU HP NO. 42 SEMER","APOTEKKU HP NO. 60 JIMBARAN","APOTEKKU 9 RENON","APOTEKKU NO. 65 KLUNGKUNG","APOTEKKU NO. 27 SENGANAN"
 ];
@@ -472,12 +476,13 @@ async function submitSurvey(){
     err.textContent='Mohon lengkapi pertanyaan 1–4 sebelum mengirim.';return;
   }
   err.textContent='';
+  if(!apiReady()){err.textContent='Sistem belum terhubung ke server. Hubungi admin ApotekKU.';return;}
   const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Mengirim…';
-  const rec={id:Date.now()+'-'+Math.random().toString(36).slice(2,7),ts:new Date().toISOString(),
+  const rec={ts:new Date().toISOString(),
     outlet:currentOutlet.name,slug:currentOutlet.slug,
     q1:state.q1,q2:state.q2,q3:state.q3,q4:state.q4,q5:document.getElementById('q5').value.trim()};
   try{
-    await window.storage.set(KEY_PREFIX+rec.id,JSON.stringify(rec),true);
+    await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(rec)});
     showView('thanks');
   }catch(e){
     err.textContent='Gagal mengirim. Periksa koneksi lalu coba lagi.';
@@ -503,15 +508,27 @@ function tryLogin(){
 
 let CACHE=[];
 async function loadAdmin(){
-  const meta=document.getElementById('adminMeta');meta.textContent='Memuat data…';
+  const meta=document.getElementById('adminMeta');
+  const body=document.getElementById('adminBody');
+  if(!apiReady()){
+    meta.textContent='Belum terhubung';
+    document.getElementById('filterbar').style.display='none';
+    body.innerHTML='<div class="panel"><div class="empty">Sistem belum terhubung ke Google Sheets.<br/>Buka file dan isi <b>API_URL</b> sesuai PANDUAN.md, lalu unggah ulang.</div></div>';
+    return;
+  }
+  meta.textContent='Memuat data…';
   let rows=[];
   try{
-    const list=await window.storage.list(KEY_PREFIX,true);
-    const keys=(list&&list.keys)?list.keys:[];
-    for(const k of keys){
-      try{const r=await window.storage.get(k,true);if(r&&r.value)rows.push(JSON.parse(r.value));}catch(e){}
-    }
-  }catch(e){meta.textContent='Gagal memuat data.';}
+    const res=await fetch(API_URL,{method:'GET'});
+    const data=await res.json();
+    rows=(data&&data.rows)?data.rows:[];
+    rows=rows.map(r=>({ts:r.ts,outlet:r.outlet,slug:r.slug,q1:Number(r.q1),q2:r.q2,q3:Number(r.q3),q4:Number(r.q4),q5:r.q5||''}))
+             .filter(r=>r.q1);
+  }catch(e){
+    meta.textContent='Gagal memuat data.';
+    body.innerHTML='<div class="panel"><div class="empty">Tidak dapat mengambil data dari server. Periksa koneksi atau URL Web App, lalu coba Muat ulang.</div></div>';
+    return;
+  }
   rows.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
   CACHE=rows;
   document.getElementById('filterbar').style.display=rows.length?'flex':'none';
