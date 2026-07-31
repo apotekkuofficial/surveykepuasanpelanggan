@@ -249,6 +249,14 @@
   .linkrow code{background:#FFF5F4;color:var(--crimson-deep);padding:3px 8px;border-radius:6px;font-size:.76rem;white-space:nowrap}
   .linkrow button{background:var(--crimson);color:#fff;border:0;border-radius:8px;padding:6px 12px;font-size:.75rem;font-weight:600;cursor:pointer;flex:none}
   .linkrow button:hover{background:var(--crimson-deep)}
+  .addrow{display:flex;gap:10px;align-items:center;margin-bottom:4px;flex-wrap:wrap}
+  .addrow .join{flex:none;background:linear-gradient(135deg,var(--red-bright),var(--crimson-deep));color:#fff;border:0;border-radius:11px;padding:13px 20px;font-family:var(--sans);font-weight:700;font-size:.88rem;cursor:pointer}
+  .addrow .join:hover{transform:translateY(-1px)}
+  .newbadge{background:var(--green);color:#fff;font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:100px;vertical-align:middle;letter-spacing:.03em}
+  .linkrow .del{background:#fff;color:var(--crimson);border:1.5px solid var(--line)}
+  .linkrow .del:hover{border-color:var(--crimson);background:#FFF5F4}
+  .addok{background:#F1FAF5;border:1px solid #B7E3CE;color:#1f6b4a;border-radius:11px;padding:12px 14px;margin-bottom:14px;font-size:.85rem;line-height:1.6}
+  .addok code{background:#fff;padding:2px 7px;border-radius:6px;word-break:break-all}
 
   @media(max-width:520px){
     .card-head,.card-body{padding-left:20px;padding-right:20px}
@@ -354,7 +362,7 @@
       <div class="thanks">
         <div class="big"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <h2>Terima kasih!</h2>
-        <p>Partisipasi dan masukan yang anda berikan sangat berharga bagi kami dalam meningkatkan kualitas layanan kami.</p>
+        <p>Masukan Anda sudah kami terima. Setiap tanggapan membantu ApotekKU terus berbenah demi pelayanan yang lebih baik.</p>
 
         <div class="voucher" id="voucherForm">
           <div class="gift">🎁</div>
@@ -421,18 +429,26 @@
 /* ====== HUBUNGKAN KE GOOGLE SHEETS ======
    Tempel URL Web App dari Google Apps Script di antara tanda kutip di bawah.
    Cara mendapatkannya ada di PANDUAN.md (Langkah 1–3). */
-const API_URL='https://script.google.com/macros/s/AKfycbwbDnEqp6qdPoOMsFVi0dkdP01hiFbb7XkWhRzyB4ISTuGERLkGTUJBtn7E658KIwtKtg/exec';
+const API_URL='https://script.google.com/macros/s/AKfycbyubts5Iu_g4qX6vnKA4TObw8dHBihZwIXmeMyMqrNskCApbQ-ZA8W5wuHECeZ32J6p/exec';
 const PASSCODE='apotek2026';
 function apiReady(){return API_URL && !/PASTE_URL/.test(API_URL);}   // ganti sesuai kebutuhan
 const OUTLET_NAMES=[
 "APOTEKKU HP NO. 46 CAMPUHAN UBUD","APOTEKKU NO. 36 CAHAYA MEDIKA","APOTEKKU HP NO. 47 CAMPLUNG TANDUK","APOTEKKU A.YANI DENPASAR","APOTEKKU NO. 49 MANYAR","APOTEKKU NO. 39 DALUNG","APOTEKKU NO. 37 TRENGGULI","APOTEKKU KITA NEGARA","APOTEKKU NO. 78 TAMAN GRIYA 2","APOTEKKU NO. 57 PEKUTATAN","APOTEKKU HP MUNGGU 2","APOTEKKU NO. 31 GATSU","APOTEKKU MARGA","APOTEKKU NO. 54 SINGASANA","APOTEKKU NO. 41 KARANGASEM","APOTEKKU HP NO. 48 MELASTI","APOTEKKU NO. 75 TEUKU UMAR","APOTEKKU BAJRA","APOTEKKU HP NO. 38 PERERENAN","APOTEKKU GUNUNG SANGHYANG","APOTEKKU NO. 73 PEREAN","APOTEKKU NO. 66 TUBAN","APOTEKKU HP NO. 61 SEMINYAK","APOTEKKU SESETAN","APOTEKKU NO. 43 SUKAWATI","APOTEKKU MENGWI","APOTEKKU BYPASS","APOTEKKU HP NO. 32 KEROBOKAN","APOTEKKU PADU KARYA","APOTEKKU NEGARA","APOTEKKU NO. 67 DANAU BUYAN","APOTEKKU NO. 70 DALUNG PERMAI","APOTEKKU NO. 62 PAGUTAN MATARAM","APOTEKKU UBUD","APOTEKKU NO. 74 PENARUNGAN","APOTEKKU KITA UBUNG","APOTEKKU GUNUNG AGUNG","APOTEKKU NO. 64 NYITDAH","APOTEKKU HP NO. 63 TANJUNG BENOA","APOTEKKU NO. 76 ABIANSEMAL","APOTEKKU NO. 28 SERIRIT","APOTEKKU NO. 71 SURAPATI SINGARAJA","APOTEKKU KUTA","APOTEKKU NO. 72 GOR DEBES","APOTEKKU NO. 77 REMBIGA MATARAM","APOTEKKU SINGARAJA","APOTEKKU MAMBAL","APOTEKKU NO. 55 GIANYAR","APOTEKKU NO. 80 SUKAWATI 2","APOTEKKU HP NO. 79 UBUD RAYA","APOTEKKU NO. 33 YEH AYA","APOTEKKU NO. 68 HAYAM WURUK","APOTEKKU HP NO. 50 BYPASS SANUR","APOTEKKU NO. 59 NUSA DUA","APOTEKKU HP NO. 30 CANGGU","APOTEKKU BATUBULAN","APOTEKKU PULAU KAWE","APOTEKKU HP NO. 69 DANAU TAMBLINGAN","APOTEKKU TEUKU UMAR BARAT","APOTEKKU KAMASAN","APOTEKKU KURNIA","APOTEKKU HP NO. 44 ULUWATU","APOTEKKU H P MUNGGU","APOTEKKU HP NO. 53 HANOMAN UBUD","APOTEKKU KITA SETIA","APOTEKKU NO. 51 ABIAN TUBUH MATARAM","APOTEKKU NO. 35 MONANG MANING","APOTEKKU NO. 81 SELABIH","APOTEKKU HP NO. 40 BERAWA","APOTEKKU HP NO. 45 SANUR","APOTEKKU BERABAN","APOTEKKU NO. 56 SURYA MEDIKA","APOTEKKU NO. 52 AMPENAN MATARAM","APOTEKKU KITA SIDHIKARYA","APOTEKKU NO. 34 TAMAN GRIYA","APOTEKKU SANGGULAN","APOTEKKU HP NO. 42 SEMER","APOTEKKU HP NO. 60 JIMBARAN","APOTEKKU 9 RENON","APOTEKKU NO. 65 KLUNGKUNG","APOTEKKU NO. 27 SENGANAN"
 ];
 function slugify(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
-const OUTLETS=OUTLET_NAMES.map(n=>({name:n,slug:slugify(n)}));
+const OUTLETS_BASE=OUTLET_NAMES.map(n=>({name:n,slug:slugify(n)}));
+let customOutlets=[];
+let OUTLETS=OUTLETS_BASE.slice();
+function rebuildOutlets(){
+  const seen=new Set();const merged=[];
+  OUTLETS_BASE.concat(customOutlets).forEach(o=>{if(o&&o.slug&&!seen.has(o.slug)){seen.add(o.slug);merged.push(o);}});
+  OUTLETS=merged;
+}
 
 let state={q1:0,q2:'',q3:0,q4:null};
 let currentOutlet=null;
 let lastSubmissionId=null;
+let justAdded=null;
 
 /* ---------- build inputs ---------- */
 function buildStars(id,field){
@@ -479,14 +495,35 @@ function setOutletHeader(){
 }
 
 /* deep-link: ?outlet=slug opens that outlet's survey directly */
-(function initOutlet(){
+function resolveDeepLink(){
   try{
     const p=new URLSearchParams(location.search).get('outlet');
-    if(p){const f=OUTLETS.find(o=>o.slug===p);if(f)currentOutlet=f;}
+    if(p&&!currentOutlet){const f=OUTLETS.find(o=>o.slug===p);if(f){currentOutlet=f;setOutletHeader();}}
   }catch(e){}
+}
+async function loadOutlets(){
+  if(!apiReady())return;
+  try{
+    const res=await fetch(API_URL+'?type=outlets',{method:'GET'});
+    const data=await res.json();
+    if(data&&data.outlets){
+      customOutlets=data.outlets.filter(o=>o&&o.slug&&o.name);
+      rebuildOutlets();
+      const q=document.getElementById('outletSearch');
+      renderOutletList(q?q.value:'');
+      const hadParam=!!new URLSearchParams(location.search).get('outlet');
+      const onChoose=document.getElementById('chooseView').style.display!=='none';
+      if(!currentOutlet&&hadParam){resolveDeepLink();if(currentOutlet&&onChoose)showView('survey');}
+    }
+  }catch(e){}
+}
+(function initOutlet(){
+  rebuildOutlets();
+  resolveDeepLink();
   renderOutletList('');
   setOutletHeader();
   showView('survey');
+  loadOutlets();
 })();
 
 /* ---------- views ---------- */
@@ -606,7 +643,8 @@ function renderAdmin(){
   const all=CACHE;
   if(!all.length){
     meta.textContent='Belum ada respons';
-    body.innerHTML='<div class="panel"><div class="empty">Belum ada pelanggan yang mengisi survei.<br/>Bagikan link outlet via WhatsApp untuk mulai mengumpulkan masukan.</div></div>';
+    document.getElementById('filterbar').style.display='none';
+    body.innerHTML=managePanel()+'<div class="panel"><div class="empty">Belum ada pelanggan yang mengisi survei.<br/>Tambah cabang di atas lalu bagikan linknya via WhatsApp untuk mulai mengumpulkan masukan.</div></div>';
     return;
   }
   // build/refresh filter, keep selection
@@ -638,7 +676,7 @@ function renderAdmin(){
   const satDist=[1,2,3,4,5].map(v=>rows.filter(r=>r.q1===v).length);
 
   let html='';
-  if(isAll){html+=outletComparison(all)+linkPanel();}
+  if(isAll){html+=outletComparison(all)+managePanel();}
   // KPIs
   html+='<div class="kpis">';
   html+=kpi('Total Respons',n,'pelanggan',false);
@@ -784,19 +822,60 @@ function outletComparison(all){
   return h;
 }
 
-/* ---------- HO: per-outlet share links ---------- */
-function linkPanel(){
+/* ---------- HO: kelola cabang + link ---------- */
+function managePanel(){
   let base='';try{base=location.origin+location.pathname;}catch(e){}
   const usable=base&&/^https?:/.test(base);
-  let h='<div class="panel"><h3>Link Survei per Outlet</h3>'
-    +'<div class="rd" style="margin-bottom:14px;color:var(--muted);font-size:.82rem">Setiap outlet punya link sendiri untuk dibagikan via WhatsApp / QR. Pelanggan langsung masuk ke survei outlet itu tanpa memilih. '
-    +(usable?'':'Setelah file di-<em>host</em>, tempelkan kode di bawah ke belakang URL Anda.')+' Semua jawaban tetap masuk ke dashboard ini.</div>';
+  const customSlugs=new Set(customOutlets.map(o=>o.slug));
+  let h='<div class="panel"><h3>Kelola Cabang &amp; Link Survei</h3>';
+  if(justAdded){
+    const jl=usable?base+'?outlet='+justAdded.slug:'?outlet='+justAdded.slug;
+    h+='<div class="addok">✓ Cabang <b>'+esc(justAdded.name)+'</b> ditambahkan. Link: <code>'+esc(jl)+'</code> '
+      +'<button class="join" style="padding:5px 12px;font-size:.76rem" onclick="copyLink(this,\''+jl.replace(/'/g,'')+'\')">Salin Link</button></div>';
+    justAdded=null;
+  }
+  h+='<div class="rd" style="margin-bottom:12px;color:var(--muted);font-size:.82rem">Tambah cabang baru untuk membuat link surveinya otomatis. Cabang baru langsung muncul di halaman pemilihan pelanggan. Semua jawaban tetap masuk ke dashboard ini.</div>';
+  h+='<div class="addrow"><input id="newBranch" class="osearch" style="margin:0;flex:1;min-width:200px" placeholder="Nama cabang baru, mis. APOTEKKU NO. 82 CANGGU" onkeydown="if(event.key===\'Enter\')addBranch()" /><button class="join" onclick="addBranch()">Tambah &amp; Buat Link</button></div>';
+  h+='<div class="verr" id="branchMsg" style="text-align:left"></div>';
+  h+='<div class="rd" style="margin:14px 0 8px;font-weight:700;color:var(--ink)">Total '+OUTLETS.length+' cabang · '+customOutlets.length+' ditambahkan sendiri</div>';
   OUTLETS.forEach(o=>{
     const link=usable?base+'?outlet='+o.slug:'?outlet='+o.slug;
-    h+='<div class="linkrow"><span class="ln">'+esc(o.name)+'</span><code>?outlet='+o.slug+'</code>'
-      +'<button onclick="copyLink(this,\''+link.replace(/'/g,'')+'\')">Salin</button></div>';
+    const isCustom=customSlugs.has(o.slug);
+    h+='<div class="linkrow"><span class="ln">'+esc(o.name)+(isCustom?' <span class="newbadge">baru</span>':'')+'</span><code>?outlet='+o.slug+'</code>'
+      +'<button onclick="copyLink(this,\''+link.replace(/'/g,'')+'\')">Salin</button>'
+      +(isCustom?'<button class="del" onclick="deleteBranch(\''+o.slug+'\')">Hapus</button>':'')+'</div>';
   });
   h+='</div>';return h;
+}
+async function addBranch(){
+  const inp=document.getElementById('newBranch');const msg=document.getElementById('branchMsg');
+  const name=(inp.value||'').trim().replace(/\s+/g,' ');
+  if(!name){msg.style.color='var(--crimson)';msg.textContent='Isi nama cabang terlebih dahulu.';return;}
+  const slug=slugify(name);
+  if(!slug){msg.style.color='var(--crimson)';msg.textContent='Nama tidak valid.';return;}
+  if(OUTLETS.some(o=>o.slug===slug)){msg.style.color='var(--crimson)';msg.textContent='Cabang dengan nama/kode itu sudah ada.';return;}
+  if(!apiReady()){msg.style.color='var(--crimson)';msg.textContent='Belum terhubung ke server (isi API_URL).';return;}
+  msg.style.color='var(--muted)';msg.textContent='Menyimpan…';
+  try{
+    await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'addOutlet',name:name,slug:slug})});
+    customOutlets.push({name:name,slug:slug});
+    rebuildOutlets();
+    const q=document.getElementById('outletSearch');renderOutletList(q?q.value:'');
+    justAdded={name:name,slug:slug};
+    renderAdmin();
+  }catch(e){msg.style.color='var(--crimson)';msg.textContent='Gagal menyimpan. Periksa koneksi lalu coba lagi.';}
+}
+async function deleteBranch(slug){
+  const o=OUTLETS.find(x=>x.slug===slug);
+  if(!confirm('Hapus cabang "'+(o?o.name:slug)+'" dari daftar?\nJawaban yang sudah masuk tetap tersimpan.'))return;
+  if(!apiReady())return;
+  try{
+    await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'deleteOutlet',slug:slug})});
+    customOutlets=customOutlets.filter(x=>x.slug!==slug);
+    rebuildOutlets();
+    const q=document.getElementById('outletSearch');renderOutletList(q?q.value:'');
+    renderAdmin();
+  }catch(e){alert('Gagal menghapus cabang.');}
 }
 function copyLink(btn,t){
   try{navigator.clipboard.writeText(t);}catch(e){}
